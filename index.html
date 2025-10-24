@@ -1,0 +1,1671 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Adrian Alcaraz - Visualización de Eventos</title>
+    
+    <!-- Fuentes --><link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@700;800&display=swap" rel="stylesheet">
+    
+    <style>
+        :root {
+            --electric-blue-1: #1877F2;
+            --electric-blue-2: #4783FF;
+            --electric-blue-3: #192447;
+            --pure-white: #FFFFFF;
+            --dark-gray: #181A20;
+            --charcoal: #23252B;
+            --neon-blue: #00D4FF;
+            --neon-purple: #B84AFF;
+            --neon-green: #39FF7A;
+            --nav-height: 70px;
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        html {
+            scroll-padding-top: var(--nav-height);
+            scroll-behavior: smooth; /* Asegura scroll suave en todo */
+        }
+
+        body {
+            font-family: 'Inter', sans-serif;
+            background: var(--dark-gray);
+            color: var(--pure-white);
+            overflow-x: hidden;
+        }
+
+        /* Animated Background */
+        .animated-bg {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            z-index: -1;
+            background: linear-gradient(135deg, var(--electric-blue-3) 0%, var(--dark-gray) 50%, var(--charcoal) 100%);
+        }
+
+        .animated-bg::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-image: 
+                linear-gradient(45deg, transparent 40%, rgba(0, 212, 255, 0.1) 50%, transparent 60%),
+                linear-gradient(-45deg, transparent 40%, rgba(184, 74, 255, 0.1) 50%, transparent 60%);
+            animation: circuit-flow 20s linear infinite;
+        }
+
+        @keyframes circuit-flow {
+            0% { transform: translateX(-100%) translateY(-100%); }
+            100% { transform: translateX(100%) translateY(100%); }
+        }
+
+        /* Sparkles Animation */
+        .sparkles {
+            position: absolute;
+            width: 100%;
+            height: 100%;
+        }
+
+        .sparkle {
+            position: absolute;
+            width: 2px;
+            height: 2px;
+            background: var(--neon-blue);
+            border-radius: 50%;
+            animation: sparkle 3s ease-in-out infinite;
+        }
+
+        @keyframes sparkle {
+            0%, 100% { opacity: 0; transform: scale(0); }
+            50% { opacity: 1; transform: scale(1); }
+        }
+
+        /* Container */
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 0 20px;
+            position: relative;
+            z-index: 1;
+        }
+
+        /* Navegación Fija */
+        .sticky-nav {
+            position: sticky;
+            top: 0;
+            width: 100%;
+            height: var(--nav-height);
+            z-index: 1000;
+            background: rgba(24, 26, 32, 0.8);
+            backdrop-filter: blur(10px);
+            -webkit-backdrop-filter: blur(10px);
+            border-bottom: 1px solid rgba(0, 212, 255, 0.2);
+            box-shadow: 0 4px 20px rgba(0, 0, 0, 0.2);
+        }
+
+        .nav-content {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            height: 100%;
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 0 20px;
+        }
+
+        .nav-logo {
+            font-size: 1.4rem;
+            font-weight: 700;
+            color: var(--pure-white);
+            text-decoration: none;
+        }
+
+        .nav-logo span {
+            color: var(--neon-blue);
+        }
+
+        .nav-links {
+            display: flex;
+            gap: 30px;
+        }
+
+        .nav-links a {
+            color: rgba(255, 255, 255, 0.8);
+            text-decoration: none;
+            font-weight: 500;
+            transition: color 0.3s ease;
+            position: relative;
+            padding-bottom: 5px;
+        }
+
+        .nav-links a::after {
+            content: '';
+            position: absolute;
+            bottom: 0;
+            left: 0;
+            width: 100%;
+            height: 2px;
+            background: var(--neon-blue);
+            transform: scaleX(0);
+            transform-origin: right;
+            transition: transform 0.3s ease;
+        }
+
+        .nav-links a:hover,
+        .nav-links a.active {
+            color: var(--pure-white);
+        }
+
+        .nav-links a:hover::after,
+        .nav-links a.active::after {
+            transform: scaleX(1);
+            transform-origin: left;
+        }
+
+        /* Botón de menú para móviles */
+        .nav-toggle {
+            display: none;
+            background: none;
+            border: none;
+            cursor: pointer;
+            z-index: 1001;
+        }
+
+        .nav-toggle-line {
+            display: block;
+            width: 25px;
+            height: 2px;
+            background: var(--pure-white);
+            margin: 5px 0;
+            transition: all 0.3s ease;
+        }
+
+        /* Hero Section */
+        .hero {
+            min-height: 100vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            padding: var(--nav-height) 0 80px 0;
+            background: linear-gradient(135deg, rgba(24, 119, 242, 0.1) 0%, rgba(25, 36, 71, 0.3) 100%);
+        }
+
+        .hero-content {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            text-align: center;
+            width: 100%;
+            gap: 0;
+        }
+
+        .hero-text h1 {
+            font-family: 'Poppins', sans-serif;
+            font-size: 6rem;
+            font-weight: 800;
+            margin-bottom: 40px;
+            background: linear-gradient(135deg, var(--neon-blue) 0%, var(--electric-blue-2) 100%);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+            text-shadow: 0 0 40px rgba(0, 212, 255, 0.6);
+            position: relative;
+        }
+
+        .hero-text h1::after {
+           display: none;
+        }
+
+        .hero-tagline {
+            font-family: 'Poppins', sans-serif;
+            font-size: 2.5rem;
+            font-weight: 700;
+            line-height: 1.4;
+            margin-bottom: 20px;
+            color: var(--neon-blue);
+        }
+
+        .hero-description {
+            font-size: 1.5rem;
+            line-height: 1.6;
+            margin-bottom: 0;
+            color: rgba(255, 255, 255, 0.85);
+            max-width: 600px; 
+            margin-left: auto;
+            margin-right: auto;
+        }
+
+        .hero-image {
+            position: relative;
+            width: 100%;
+            max-width: 800px;
+            margin-bottom: 40px;
+        }
+
+        .hero-image img {
+            width: 100%;
+            height: auto;
+            border-radius: 20px;
+            box-shadow: 0 20px 60px rgba(0, 212, 255, 0.3);
+            border: 2px solid rgba(0, 212, 255, 0.3);
+        }
+
+        /* CTA Button */
+        .cta-button {
+            display: inline-block;
+            padding: 18px 40px;
+            background: linear-gradient(135deg, var(--electric-blue-1) 0%, var(--electric-blue-2) 100%);
+            color: var(--pure-white);
+            text-decoration: none;
+            border-radius: 50px;
+            font-weight: 600;
+            font-size: 1.1rem;
+            box-shadow: 0 10px 30px rgba(24, 119, 242, 0.4);
+            transition: all 0.3s ease;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .cta-button:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 15px 40px rgba(24, 119, 242, 0.6);
+            animation: pulse-glow 1.5s ease-in-out infinite;
+        }
+
+        @keyframes pulse-glow {
+            0%, 100% { box-shadow: 0 15px 40px rgba(24, 119, 242, 0.6); }
+            50% { box-shadow: 0 15px 50px rgba(0, 212, 255, 0.8); }
+        }
+
+        /* Section Titles */
+        .section-title {
+            font-size: 3rem;
+            font-weight: 700;
+            text-align: center;
+            margin-bottom: 60px;
+            background: linear-gradient(135deg, var(--pure-white) 0%, var(--neon-blue) 100%);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+        }
+
+        .section-subtitle {
+            font-size: 1.2rem;
+            text-align: center;
+            margin-bottom: 40px;
+            color: rgba(255, 255, 255, 0.7);
+        }
+
+        /* Before/After Sliders */
+        .sliders-section {
+            padding: 100px 0;
+            background: rgba(35, 37, 43, 0.5);
+        }
+
+        .sliders-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(500px, 1fr));
+            gap: 40px;
+            margin-top: 60px;
+        }
+        
+        @media (max-width: 540px) {
+            .sliders-grid {
+                grid-template-columns: 1fr;
+                min-width: 0; 
+            }
+        }
+
+        .slider-container {
+            background: rgba(24, 119, 242, 0.1);
+            border-radius: 20px;
+            padding: 30px;
+            border: 1px solid rgba(0, 212, 255, 0.3);
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.3);
+        }
+
+        .slider-title {
+            font-size: 1.5rem;
+            font-weight: 600;
+            margin-bottom: 15px;
+            color: var(--neon-blue);
+        }
+
+        .slider-description {
+            font-size: 1rem;
+            margin-bottom: 25px;
+            color: rgba(255, 255, 255, 0.8);
+            line-height: 1.5;
+        }
+
+        .image-comparison {
+            position: relative;
+            width: 100%;
+            height: 300px;
+            overflow: hidden;
+            border-radius: 15px;
+            cursor: col-resize;
+            border: 2px solid var(--neon-blue);
+            box-shadow: 0 0 20px rgba(0, 212, 255, 0.4);
+            touch-action: pan-y;
+        }
+
+        .image-comparison img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+            position: absolute;
+            top: 0;
+            left: 0;
+            pointer-events: none;
+            user-select: none;
+        }
+
+        .image-after {
+            clip-path: polygon(50% 0%, 100% 0%, 100% 100%, 50% 100%);
+        }
+
+        .slider-handle {
+            position: absolute;
+            top: 0;
+            left: 50%;
+            width: 4px; /* Solo la línea azul */
+            height: 100%;
+            background: var(--neon-blue);
+            cursor: col-resize;
+            transform: translateX(-50%);
+            box-shadow: 0 0 10px var(--neon-blue); /* Brillo */
+            z-index: 10;
+        }
+
+        /* Círculo de agarre y triángulos eliminados */
+        .slider-handle::before {
+            display: none;
+        }
+
+        .slider-handle::after {
+            display: none;
+        }
+
+
+        /* Benefits Section */
+        .benefits {
+            padding: 100px 0;
+        }
+
+        .benefits-intro {
+            text-align: center;
+            font-size: 1.3rem;
+            line-height: 1.6;
+            margin-bottom: 60px;
+            color: rgba(255, 255, 255, 0.8);
+            max-width: 800px;
+            margin-left: auto;
+            margin-right: auto;
+        }
+
+        .benefits-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(350px, 1fr));
+            gap: 30px;
+        }
+
+        .benefit-item {
+            background: rgba(24, 119, 242, 0.1);
+            padding: 30px;
+            border-radius: 15px;
+            border: 1px solid rgba(0, 212, 255, 0.2);
+            transition: all 0.3s ease;
+            text-align: center; /* Icono y texto centrados */
+        }
+
+        .benefit-item:hover {
+            transform: translateY(-10px);
+            box-shadow: 0 20px 40px rgba(0, 212, 255, 0.2);
+            border-color: rgba(0, 212, 255, 0.5);
+        }
+
+        .benefit-item::before {
+            display: none; /* Emoji genérico eliminado */
+        }
+
+        /* Estilos para los iconos SVG */
+        .benefit-icon {
+            display: inline-block;
+            margin-bottom: 20px;
+            color: var(--neon-blue);
+        }
+
+        .benefit-icon svg {
+            width: 48px;
+            height: 48px;
+            stroke: var(--neon-blue);
+            stroke-width: 1.5;
+            fill: rgba(0, 212, 255, 0.1); /* Relleno sutil */
+            stroke-linecap: round;
+            stroke-linejoin: round;
+            filter: drop-shadow(0 0 5px var(--neon-blue)); /* Efecto de brillo */
+        }
+
+        .benefit-item p {
+            font-size: 1.1rem;
+            line-height: 1.5;
+            color: rgba(255, 255, 255, 0.9);
+        }
+
+        .benefits-closing {
+            text-align: center;
+            font-size: 1.4rem;
+            line-height: 1.6;
+            margin-top: 60px;
+            color: rgba(255, 255, 255, 0.8);
+            max-width: 700px;
+            margin-left: auto;
+            margin-right: auto;
+        }
+
+        /* How It Works */
+        .how-it-works {
+            padding: 100px 0;
+            background: rgba(35, 37, 43, 0.5);
+        }
+
+        /* Estructura de pasos a horizontal (flex) */
+        .process-steps {
+            display: flex;
+            flex-wrap: wrap; /* Permitir que caiga en móviles */
+            justify-content: center;
+            gap: 20px; /* Reducido para que quepan 5 */
+            margin-bottom: 60px;
+            position: relative;
+        }
+        
+        /* Conectores visuales entre pasos */
+        @media (min-width: 1200px) { /* Solo en pantallas muy anchas */
+            .process-step {
+                position: relative;
+            }
+            .process-step:not(:last-child)::after {
+                content: '';
+                position: absolute;
+                top: 30px; /* A la altura del número */
+                right: -25px; /* A mitad de camino del 'gap' */
+                width: 30px;
+                height: 2px;
+                background: linear-gradient(90deg, rgba(0, 212, 255, 0.4), rgba(0, 212, 255, 0.1));
+                opacity: 0.8;
+            }
+        }
+
+
+        .process-step {
+            text-align: center;
+            padding: 30px 20px;
+            background: rgba(24, 119, 242, 0.1);
+            border-radius: 20px;
+            border: 1px solid rgba(0, 212, 255, 0.2);
+            transition: all 0.3s ease;
+            position: relative;
+            /* Definir un ancho base para los 5 pasos */
+            flex-basis: 200px;
+            flex-grow: 1;
+        }
+
+        .process-step:hover {
+            transform: translateY(-10px);
+            box-shadow: 0 20px 40px rgba(0, 212, 255, 0.2);
+        }
+        
+        /* Estilos para el nuevo contenedor del video (usado ahora para fachada) */
+        .video-container-wrapper {
+            width: 100%;
+            max-width: 800px; /* Ancho grande para el video */
+            margin: 40px auto 0 auto; /* Espacio arriba */
+            /* Quitado borde/sombra, se aplicará a la fachada o al iframe */
+        }
+        
+        /* Contenedor de Video (Fachada) */
+        .video-facade-container {
+            position: relative;
+            width: 100%; /* Ocupa el wrapper */
+            /* max-width: 800px; */ /* Eliminado, el wrapper lo controla */
+            /* margin: 0 auto; */ /* Eliminado, el wrapper lo controla */
+            border-radius: 20px;
+            overflow: hidden;
+            box-shadow: 0 20px 60px rgba(0, 212, 255, 0.3);
+            border: 2px solid rgba(0, 212, 255, 0.5); /* Borde neón */
+            cursor: pointer;
+            background-color: #000;
+            aspect-ratio: 16 / 9; /* Asegura proporción antes de cargar imagen */
+        }
+        
+         /* Fachada para Shorts (vertical) */
+        .video-facade-container.shorts-facade {
+             max-width: 300px; /* Limita el ancho */
+             aspect-ratio: 9 / 16; /* Proporción vertical */
+             margin: 0 auto; /* Centra */
+             border-radius: 15px;
+             box-shadow: 0 10px 30px rgba(0, 212, 255, 0.3);
+             border: 2px solid rgba(0, 212, 255, 0.3);
+             width: 100%; /* Ocupa el espacio disponible en su contenedor */
+             /* height: 100%; */ /* Quitado, aspect-ratio lo maneja */
+        }
+        
+        .video-facade-container img {
+            width: 100%;
+            height: 100%;
+            display: block;
+            object-fit: cover;
+            transition: transform 0.3s ease;
+            position: absolute; /* Para cubrir el aspect-ratio */
+            top: 0;
+            left: 0;
+        }
+        
+        .video-facade-container:hover img {
+            transform: scale(1.05);
+        }
+
+        /* Botón de Play Falso */
+        .play-button {
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            width: 80px;
+            height: 80px;
+            background: rgba(0, 0, 0, 0.6);
+            border: 2px solid var(--pure-white);
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            transition: all 0.3s ease;
+            pointer-events: none; 
+            z-index: 5; /* Asegurar que esté sobre la imagen */
+        }
+        
+        .shorts-facade .play-button {
+            width: 60px;
+            height: 60px;
+        }
+
+        .play-button::before {
+            content: '';
+            display: block;
+            width: 0;
+            height: 0;
+            border-top: 15px solid transparent;
+            border-bottom: 15px solid transparent;
+            border-left: 25px solid var(--pure-white);
+            margin-left: 5px; 
+        }
+        
+        .shorts-facade .play-button::before {
+            border-top: 10px solid transparent;
+            border-bottom: 10px solid transparent;
+            border-left: 18px solid var(--pure-white);
+        }
+
+        .video-facade-container:hover .play-button {
+            background: rgba(24, 119, 242, 0.8);
+            border-color: var(--neon-blue);
+        }
+        
+        .video-facade-container:hover .play-button::before {
+            border-left-color: var(--neon-blue);
+        }
+
+        /* Contenedor para el Iframe cargado (general) */
+        .video-iframe-container {
+             position: relative;
+             width: 100%;
+             aspect-ratio: 16 / 9; /* Proporción estándar */
+             border-radius: 20px; /* Hereda redondeo */
+             overflow: hidden; /* Contiene el iframe */
+             box-shadow: 0 20px 60px rgba(0, 212, 255, 0.3); /* Mantiene sombra */
+             border: 2px solid rgba(0, 212, 255, 0.5); /* Mantiene borde */
+        }
+        
+        /* Contenedor específico para iframes de Shorts (vertical) */
+        .shorts-iframe-container {
+             position: relative;
+             width: 100%; /* Ocupa el ancho del grid */
+             max-width: 300px; /* Limita el ancho máximo del iframe */
+             aspect-ratio: 9 / 16; /* Mantiene la proporción de short */
+             margin: 0 auto; /* Centra el contenedor si es más estrecho que la columna */
+             border-radius: 15px;
+             overflow: hidden;
+             box-shadow: 0 10px 30px rgba(0, 212, 255, 0.3);
+             border: 2px solid rgba(0, 212, 255, 0.3);
+        }
+        
+        /* Estilos comunes para iframes cargados */
+        .video-iframe-container iframe,
+        .shorts-iframe-container iframe {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            border: none; /* Asegurar que no tenga borde */
+        }
+
+
+        .step-number {
+            width: 60px;
+            height: 60px;
+            background: linear-gradient(135deg, var(--electric-blue-1) 0%, var(--electric-blue-2) 100%);
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1.5rem;
+            font-weight: 700;
+            margin: 0 auto 20px;
+            box-shadow: 0 0 20px rgba(24, 119, 242, 0.4);
+        }
+
+        .step-title {
+            font-size: 1.3rem;
+            font-weight: 600;
+            margin-bottom: 15px;
+            color: var(--neon-blue);
+        }
+
+        .step-description {
+            font-size: 1rem;
+            line-height: 1.5;
+            color: rgba(255, 255, 255, 0.8);
+        }
+
+        .demo-video {
+            text-align: center;
+            margin-top: 60px;
+        }
+
+        .shorts-label {
+            font-size: 0.9rem;
+            color: var(--neon-blue);
+            text-align: center;
+            margin-bottom: 10px;
+            font-weight: 500;
+        }
+
+        .single-short {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 10px;
+        }
+
+        /* Extra Services */
+        .extra-services {
+            padding: 100px 0;
+        }
+
+        /* Reestructuración de la cuadrícula de servicios */
+        .services-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr; 
+            gap: 40px;
+            align-items: stretch; /* Asegura que las tarjetas tengan la misma altura */
+        }
+        
+        .service-card.full-width {
+            grid-column: 1 / -1; /* Ocupa todo el ancho */
+        }
+        
+        @media (max-width: 992px) {
+            .services-grid {
+                 grid-template-columns: 1fr; 
+            }
+             .service-card.full-width {
+                grid-column: 1; 
+            }
+        }
+
+
+        .service-card {
+            background: rgba(24, 119, 242, 0.1);
+            border-radius: 20px;
+            padding: 40px 30px;
+            text-align: center;
+            border: 1px solid rgba(0, 212, 255, 0.2);
+            transition: all 0.3s ease;
+            position: relative;
+            overflow: hidden;
+            display: flex;
+            flex-direction: column;
+            /* height: 100%; */ /* Quitado, align-items stretch lo maneja */
+        }
+
+        .service-card:hover {
+            transform: translateY(-10px);
+            box-shadow: 0 20px 50px rgba(0, 212, 255, 0.3);
+            border-color: rgba(0, 212, 255, 0.5);
+        }
+        
+        /* Cuadrícula interna para los videos de la tarjeta 1 */
+        .service-card-grid-inner {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 15px;
+            margin-top: auto; /* Empuja los videos hacia abajo */
+            padding-top: 20px; /* Espacio antes de los videos */
+        }
+        
+        @media (max-width: 540px) {
+             .service-card-grid-inner {
+                 grid-template-columns: 1fr;
+            }
+        }
+
+        .service-card::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: -100%;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(90deg, transparent, rgba(0, 212, 255, 0.1), transparent);
+            transition: left 0.5s ease;
+        }
+
+        .service-card:hover::before {
+            left: 100%;
+        }
+
+        .service-title {
+            font-size: 1.5rem;
+            font-weight: 600;
+            margin-bottom: 20px;
+            color: var(--neon-blue);
+        }
+
+        .service-description {
+            font-size: 1rem;
+            line-height: 1.5;
+            margin-bottom: 30px;
+            color: rgba(255, 255, 255, 0.8);
+            flex-grow: 1; /* Permite que la descripción crezca */
+        }
+        
+        /* Estilos para la lista de detalles en la tarjeta 3 */
+        .service-details-list {
+            list-style: none;
+            padding: 0;
+            margin: 0 auto 30px auto;
+            text-align: left;
+            max-width: 280px;
+        }
+        
+        .service-details-list li {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            margin-bottom: 15px;
+            font-size: 1rem;
+            color: rgba(255, 255, 255, 0.85);
+        }
+        
+        .service-details-list li svg {
+            width: 20px;
+            height: 20px;
+            stroke: var(--neon-green); 
+            stroke-width: 2;
+            flex-shrink: 0; 
+        }
+
+        /* Estilo para el nuevo botón CTA en la tarjeta 3 */
+        .service-cta-button {
+             display: inline-block;
+            padding: 18px 30px;
+            background: linear-gradient(135deg, var(--electric-blue-1) 0%, var(--electric-blue-2) 100%);
+            color: var(--pure-white);
+            text-decoration: none;
+            border-radius: 50px;
+            font-weight: 600;
+            font-size: 1.1rem;
+            box-shadow: 0 10px 30px rgba(24, 119, 242, 0.4);
+            transition: all 0.3s ease;
+            margin-top: auto; 
+            max-width: 300px; 
+            align-self: center; 
+        }
+        
+        .service-cta-button:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 15px 40px rgba(24, 119, 242, 0.6);
+        }
+
+        /* Guarantees */
+        .guarantees {
+            padding: 100px 0;
+            background: rgba(35, 37, 43, 0.5);
+            text-align: center;
+        }
+
+        .guarantee-content {
+            max-width: 600px;
+            margin: 0 auto;
+            padding: 50px;
+            background: rgba(24, 119, 242, 0.1);
+            border-radius: 20px;
+            border: 1px solid rgba(0, 212, 255, 0.3);
+            position: relative;
+        }
+
+        .guarantee-content::before {
+            content: '🛡️';
+            font-size: 3rem;
+            display: block;
+            margin-bottom: 20px;
+        }
+
+        .guarantee-text {
+            font-size: 1.3rem;
+            line-height: 1.6;
+            color: rgba(255, 255, 255, 0.9);
+        }
+
+        /* CTA Section */
+        .cta-section {
+            padding: 100px 0;
+            text-align: center;
+        }
+
+        .cta-buttons {
+            display: flex;
+            flex-wrap: wrap;
+            justify-content: center;
+            gap: 30px;
+            margin-top: 40px;
+        }
+
+        .cta-large {
+            padding: 25px 50px;
+            font-size: 1.3rem;
+            border-radius: 60px;
+        }
+
+        /* Footer */
+        .footer {
+            padding: 60px 0 30px;
+            background: var(--charcoal);
+            text-align: center;
+            position: relative;
+        }
+
+        .footer::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 2px;
+            background: linear-gradient(90deg, transparent, var(--neon-blue), transparent);
+            animation: footer-line 3s ease-in-out infinite;
+        }
+
+        @keyframes footer-line {
+            0%, 100% { opacity: 0.5; }
+            50% { opacity: 1; }
+        }
+
+        .footer-text {
+            color: rgba(255, 255, 255, 0.6);
+            font-size: 0.9rem;
+            margin-top: 30px; /* Añadir margen superior si no hay botón */
+        }
+
+        /* Mobile Responsive */
+        @media (max-width: 768px) {
+            /* Estilos para el menú móvil */
+            .nav-links {
+                position: fixed;
+                top: var(--nav-height);
+                left: 0;
+                width: 100%;
+                height: calc(100vh - var(--nav-height));
+                background: var(--charcoal);
+                flex-direction: column;
+                align-items: center;
+                justify-content: center;
+                gap: 40px;
+                transform: translateX(100%);
+                transition: transform 0.3s ease-in-out;
+            }
+
+            .nav-links.nav-active {
+                transform: translateX(0);
+            }
+
+            .nav-links a {
+                font-size: 1.5rem;
+            }
+
+            .nav-toggle {
+                display: block;
+            }
+
+            .nav-toggle.toggle .nav-toggle-line:nth-child(1) {
+                transform: rotate(-45deg) translate(-5px, 6px);
+            }
+            .nav-toggle.toggle .nav-toggle-line:nth-child(2) {
+                opacity: 0;
+            }
+            .nav-toggle.toggle .nav-toggle-line:nth-child(3) {
+                transform: rotate(45deg) translate(-5px, -6px);
+            }
+
+
+            .hero {
+                padding-top: var(--nav-height);
+            }
+
+            .hero-content {
+                gap: 0;
+                text-align: center;
+            }
+
+            .hero-text h1 {
+                font-size: 3.5rem;
+            }
+
+            .hero-tagline {
+                font-size: 1.8rem;
+            }
+
+            .hero-description {
+                font-size: 1.1rem;
+            }
+
+            .section-title {
+                font-size: 2rem;
+            }
+
+            .sliders-grid {
+                grid-template-columns: 1fr;
+            }
+
+            .slider-container {
+                padding: 20px;
+            }
+
+            .image-comparison {
+                height: 250px;
+            }
+            
+            .slider-handle {
+                width: 3px;
+            }
+
+            .benefits-grid {
+                grid-template-columns: 1fr;
+            }
+            
+            .process-steps {
+                grid-template-columns: 1fr;
+            }
+
+            /* Ajustar altura de video en móviles */
+             .video-container-wrapper iframe {
+                height: 250px;
+            }
+
+            .shorts-grid {
+                flex-direction: column;
+                align-items: center;
+            }
+
+            .shorts-iframe-container, /* Aplicar ancho max a shorts en movil */
+            .video-facade-container.shorts-facade { /* Aplicar también a la fachada */
+                max-width: 250px;
+            }
+
+            .cta-buttons {
+                flex-direction: column;
+                align-items: center;
+            }
+
+            .container {
+                padding: 0 15px;
+            }
+        }
+
+        @media (max-width: 480px) {
+            .hero {
+                padding: 40px 0;
+                padding-top: var(--nav-height);
+            }
+
+            .hero-text h1 {
+                font-size: 2.8rem;
+            }
+
+            .section-title {
+                font-size: 1.8rem;
+            }
+
+            .cta-button,
+            .cta-large {
+                padding: 15px 30px;
+                font-size: 1rem;
+            }
+
+            .sliders-grid {
+                grid-template-columns: 1fr;
+                min-width: 0;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="animated-bg">
+        <div class="sparkles" id="sparkles"></div>
+    </div>
+    
+    <!-- Navegación --><nav class="sticky-nav">
+        <div class="nav-content">
+            <a href="#" class="nav-logo">Adrian<span>Alcaraz</span></a>
+            <div class="nav-links" id="nav-links">
+                <a href="#galeria" class="nav-link">Galería</a>
+                <a href="#beneficios" class="nav-link">Beneficios</a>
+                <a href="#como-funciona" class="nav-link">Cómo Funciona</a>
+                <a href="#servicios" class="nav-link">Servicios</a>
+                <a href="#contacto" class="nav-link cta-button" style="padding: 10px 20px;">Contacto</a>
+            </div>
+            <button class="nav-toggle" id="nav-toggle" aria-label="Abrir menú">
+                <span class="nav-toggle-line"></span>
+                <span class="nav-toggle-line"></span>
+                <span class="nav-toggle-line"></span>
+            </button>
+        </div>
+    </nav>
+
+    <!-- Hero Section --><section class="hero" id="hero">
+        <div class="container">
+            <div class="hero-content">
+                <div class="hero-text">
+                    <h1>Adrian Alcaraz</h1>
+                </div>
+                <div class="hero-image">
+                    <img src="https://i.ibb.co/ZQMb5s7/Hero.png" alt="Visualización de Eventos - Collage Digital Tech">
+                </div>
+                <div class="hero-text">
+                    <p class="hero-tagline">Visualizá, convencé y cerrá.</p>
+                    <p class="hero-description">El futuro de las presentaciones de eventos empieza aquí.</p>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Before/After Sliders Section --><section class="sliders-section" id="galeria">
+        <div class="container">
+            <h2 class="section-title">Galería "Antes y Después"</h2>
+            <p class="section-subtitle">Deslizá para ver el antes y el después de cada evento</p>
+            
+            <div class="sliders-grid">
+                <!-- Casamiento --><div class="slider-container">
+                    <h3 class="slider-title">Casamiento</h3>
+                    <p class="slider-description">Transformá un salón vacío en un escenario único para bodas. Mostrá el impacto de una propuesta premium antes de decidir.</p>
+                    <div class="image-comparison" 
+                         role="slider" 
+                         aria-valuenow="50" 
+                         aria-valuemin="0" 
+                         aria-valuemax="100" 
+                         aria-label="Comparador de imagen antes y después de un casamiento">
+                        <img class="image-before" src="https://i.ibb.co/t5P3hwS/2-salon-de-bodas-vacio.jpg" alt="Salón de bodas vacío (antes)">
+                        <img class="image-after" src="https://i.ibb.co/wFpT1mVC/3-Salon-bodas-decorado.png" alt="Salón de bodas decorado (después)">
+                        <div class="slider-handle" tabindex="0"></div>
+                    </div>
+                </div>
+
+                <!-- Fiesta de quince --><div class="slider-container">
+                    <h3 class="slider-title">Fiesta de quince</h3>
+                    <p class="slider-description">Convertí la visión juvenil en realidad: salones sociales que se transforman en ambientes temáticos, personalizados para fiestas inolvidables.</p>
+                    <div class="image-comparison" 
+                         role="slider" 
+                         aria-valuenow="50" 
+                         aria-valuemin="0" 
+                         aria-valuemax="100" 
+                         aria-label="Comparador de imagen antes y después de una fiesta de quince">
+                        <img class="image-before" src="https://i.ibb.co/W47TxZwS/4-campo-15-a-os.jpg" alt="Campo para 15 años vacío (antes)">
+                        <img class="image-after" src="https://i.ibb.co/8LP5Sr03/5-decorado-15-a-os.png" alt="Campo para 15 años decorado (después)">
+                        <div class="slider-handle" tabindex="0"></div>
+                    </div>
+                </div>
+
+                <!-- Infantil --><div class="slider-container">
+                    <h3 class="slider-title">Infantil</h3>
+                    <p class="slider-description">De la imaginación al festejo: espacios infantiles que cobran vida según los sueños de cada niño, con decoraciones creadas por IA.</p>
+                    <div class="image-comparison" 
+                         role="slider" 
+                         aria-valuenow="50" 
+                         aria-valuemin="0" 
+                         aria-valuemax="100" 
+                         aria-label="Comparador de imagen antes y después de un salón infantil">
+                        <img class="image-before" src="https://i.ibb.co/23wTmp2S/6-salon-infantil.png" alt="Salón infantil vacío (antes)">
+                        <!-- CAMBIO: Corregida la URL de la imagen 'after' --><img class="image-after" src="https://i.ibb.co/XkDSW1xd/7-salon-infantil-decorado.png" alt="Salón infantil decorado (después)">
+                        <div class="slider-handle" tabindex="0"></div>
+                    </div>
+                </div>
+
+                <!-- Corporativo --><div class="slider-container">
+                    <h3 class="slider-title">Corporativo</h3>
+                    <p class="slider-description">Imaginá el éxito de tu evento empresarial: auditorios y salas transformados en galas y lanzamientos impactantes, con visualización profesional.</p>
+                    <div class="image-comparison" 
+                         role="slider" 
+                         aria-valuenow="50" 
+                         aria-valuemin="0" 
+                         aria-valuemax="100" 
+                         aria-label="Comparador de imagen antes y después de un auditorio corporativo">
+                        <img class="image-before" src="https://i.ibb.co/67YV0qQz/8-auditorio.png" alt="Auditorio vacío (antes)">
+                        <!-- CAMBIO: Corregida la URL de la imagen 'after' --><img class="image-after" src="https://i.ibb.co/7dF9s5py/9-auditorio-decorado.png" alt="Auditorio decorado (después)">
+                        <div class="slider-handle" tabindex="0"></div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Benefits Section --><section class="benefits" id="beneficios">
+        <div class="container">
+            <h2 class="section-title">Impacto y Beneficio Central</h2>
+            <p class="benefits-intro">
+                Cada evento plantea desafíos únicos—y vos, como profesional creativo, necesitás respuestas concretas para tus clientes desde el primer momento. Acelerá resultados, diferenciá tu propuesta y convertí ideas en decisiones seguras, sin dejar espacio para la improvisación.
+            </p>
+            
+            <div class="benefits-grid">
+                <div class="benefit-item">
+                    <!-- Icono SVG para "Dudas" (Foco/Idea) --><div class="benefit-icon">
+                        <svg viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+                            <path d="M9 21.5a1 1 0 0 1-1-1v-1a1 1 0 0 1 1-1h6a1 1 0 0 1 1 1v1a1 1 0 0 1-1 1h-1a1 1 0 0 0-1 1h-2a1 1 0 0 0-1-1H9zM12 2C8.13 2 5 5.13 5 9c0 3.39 2.22 6.23 5.13 6.86A3 3 0 0 1 12 18a3 3 0 0 1-1.87-5.14C12.78 12.23 15 9.39 15 9c0-3.87-3.13-7-8-7z"></path>
+                        </svg>
+                    </div>
+                    <p><strong>Decisiones bloqueadas por dudas:</strong> Resolvé la incertidumbre presentando visualizaciones concretas desde el inicio.</p>
+                </div>
+                <div class="benefit-item">
+                    <!-- Icono SVG para "Tiempo" (Reloj) --><div class="benefit-icon">
+                        <svg viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+                            <path d="M12 2C6.5 2 2 6.5 2 12s4.5 10 10 10 10-4.5 10-10S17.5 2 12 2zm0 18c-4.4 0-8-3.6-8-8s3.6-8 8-8 8 3.6 8 8-3.6 8-8 8z"></path>
+                            <path d="M12.5 7H11v6l5.2 3.2.8-1.3-4.5-2.7zM13 3.5V6h-2V3.5a.5.5 0 0 1 .5-.5h1a.5.5 0 0 1 .5.5z"></path>
+                        </svg>
+                    </div>
+                    <p><strong>Pérdida de tiempo en revisiones:</strong> Mostrá exactamente lo que se va a lograr, ahorrando idas y vueltas en cada paso.</p>
+                </div>
+                <div class="benefit-item">
+                    <!-- Icono SVG para "Premium" (Diamante) --><div class="benefit-icon">
+                        <svg viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+                            <path d="M12 2L2 9l10 13L22 9l-10-7zm0 2.43l7.07 4.95L12 18.3 4.93 9.38 12 4.43z"></path>
+                        </svg>
+                    </div>
+                    <p><strong>Dificultad para justificar presupuestos premium:</strong> Transformá la propuesta en una realidad tangible que invita a invertir sin objeciones.</p>
+                </div>
+                <div class="benefit-item">
+                    <!-- Icono SVG para "Abstracto" (Estrellas/Magia) --><div class="benefit-icon">
+                        <svg viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+                             <path d="M16 3l-1.4 3.7-3.7 1.4 3.7 1.4L16 13l1.4-3.7L21 7.9l-3.7-1.4L16 3zM5 14l-1.4 3.7-3.7 1.4 3.7 1.4L5 24l1.4-3.7L10 19.1l-3.7-1.4L5 14zM19 12.3l-1.4-1.4-8.5 8.5 1.4 1.4L19 12.3z"></path>
+                        </svg>
+                    </div>
+                    <p><strong>Frustración por moodboards abstractos:</strong> Ofrecé imágenes y recorridos fotorrealistas, mucho más claros que referencias tradicionales.</p>
+                </div>
+                <div class="benefit-item">
+                    <!-- Icono SVG para "Valor/Estrategia" (Objetivo) --><div class="benefit-icon">
+                        <svg viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+                            <path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm0 18c-4.41 0-8-3.59-8-8s3.59-8 8-8 8 3.59 8 8-3.59 8-8 8zm0-10c-1.1 0-2 .9-2 2s.9 2 2 2 2-.9 2-2-.9-2-2-2z"></path>
+<circle cx="12" cy="12" r="2"></circle>
+                        </svg>
+                    </div>
+                    <p><strong>Riesgo de desaprovechar el valor creativo:</strong> Convertí tu visión en una herramienta estratégica para cerrar ventas y posicionar tu marca.</p>
+                </div>
+                <div class="benefit-item">
+                    <!-- Icono SVG para "Imaginar" (Ojo) --><div class="benefit-icon">
+                        <svg viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+                            <path d="M12 4.5C7 4.5 2.73 7.61 1 12c1.73 4.39 6 7.5 11 7.5s9.27-3.11 11-7.5C21.27 7.61 17 4.5 12 4.5zM12 17c-2.76 0-5-2.24-5-5s2.24-5 5-5 5 2.24 5 5-2.24 5-5 5zm0-8c-1.66 0-3 1.34-3 3s1.34 3 3 3 3-1.34 3-3-1.34-3-3-3z"></path>
+                        </svg>
+                    </div>
+                    <p><strong>Clientes que no pueden imaginar el resultado final:</strong> Destacá la experiencia completa y ayudá a tu cliente a decidir con confianza.</p>
+                </div>
+            </div>
+            
+            <p class="benefits-closing">
+                Vos dominás el proceso creativo; yo soy tu socio invisible que simplifica la visualización y te permite enfocarte en lo esencial: la experiencia y la emoción de cada evento.
+            </p>
+        </div>
+    </section>
+
+    <!-- How It Works Section --><section class="how-it-works" id="como-funciona">
+        <div class="container">
+            <h2 class="section-title">¿Cómo funciona?</h2>
+            
+            <!-- Contenedor de pasos ahora es horizontal (flex) --><div class="process-steps">
+                <div class="process-step">
+                    <div class="step-number">1</div>
+                    <h3 class="step-title">Tus ideas, tu espacio</h3>
+                    <p class="step-description">Mostrá el salón real y contanos cómo querés que se vea tu evento.</p>
+                </div>
+                
+                <div class="process-step">
+                    <div class="step-number">2</div>
+                    <h3 class="step-title">Sumá tu inspiración</h3>
+                    <p class="step-description">Potenciá tu visión enviando referencias, imágenes de tus eventos pasados, colores y detalles clave. Mientras más claridad, más poderosa será la propuesta.</p>
+                </div>
+                
+                <div class="process-step">
+                    <div class="step-number">3</div>
+                    <h3 class="step-title">Visualización inteligente</h3>
+                    <p class="step-description">Recibí visualizaciones fotorrealistas listas para presentar y recorridos virtuales que muestran la experiencia completa, generados en tiempo récord.</p>
+                </div>
+                
+                <div class="process-step">
+                    <div class="step-number">4</div>
+                    <h3 class="step-title">Ajustá sin límites</h3>
+                    <p class="step-description">Solicitá todos los cambios que quieras: cada detalle cuenta y tu feedback es esencial. Iteramos juntos hasta el 100% del impacto buscado.</p>
+                </div>
+                
+                <div class="process-step">
+                    <div class="step-number">5</div>
+                    <h3 class="step-title">Presentá sin fricciones</h3>
+                    <p class="step-description">Recibí los archivos organizados y optimizados para Google Drive, WhatsApp y email. Presentá en alta calidad, sin complicaciones técnicas ni demoras.</p>
+                </div>
+            </div>
+            
+            <!-- Contenedor de video movido aquí, centrado y grande --><div class="video-container-wrapper" style="margin-top: 20px;">
+                 <div class="video-facade-container" data-video-id="x9sl436">
+                    <!-- CAMBIO: URL de miniatura de Dailymotion --><img src="https://www.dailymotion.com/thumbnail/video/x9sl436?max=1080" alt="Miniatura de video demo">
+                    <div class="play-button"></div>
+                </div>
+            </div>
+
+        </div>
+    </section>
+
+    <!-- Extra Services Section --><section class="extra-services" id="servicios">
+        <div class="container">
+            <h2 class="section-title">Servicios Extra / Experiencias Personalizadas</h2>
+            
+            <div class="services-grid">
+                <!-- Tarjeta 1 --><div class="service-card">
+                    <h3 class="service-title">El paso del tiempo</h3>
+                    <p class="service-description">Contá la historia de los protagonistas desde pequeños hasta el gran día, con video interactivo integrado.</p>
+                    
+                    <div class="service-card-grid-inner">
+                        <div class="single-short">
+                            <div class="shorts-label">Casamiento</div>
+                            <div class="video-facade-container shorts-facade" data-video-id="x9sl4s2">
+                                <!-- CAMBIO: URL de miniatura de Dailymotion --><img src="https://www.dailymotion.com/thumbnail/video/x9sl4s2?max=1080" alt="Miniatura video casamiento">
+                                <div class="play-button"></div>
+                            </div>
+                        </div>
+                        <div class="single-short">
+                            <div class="shorts-label">15 años</div>
+                             <div class="video-facade-container shorts-facade" data-video-id="x9sl5hi">
+                                <!-- CAMBIO: URL de miniatura de Dailymotion --><img src="https://www.dailymotion.com/thumbnail/video/x9sl5hi?max=1080" alt="Miniatura video 15 años">
+                                <div class="play-button"></div>
+                             </div>
+                        </div>
+                    </div>
+                </div>
+                
+                <!-- Tarjeta 2 --><div class="service-card">
+                    <h3 class="service-title">Cumpleaños personalizados</h3>
+                    <p class="service-description">Convertí los dibujos de niños en la temática única de su fiesta, usando IA para sorprender en cada detalle.</p>
+                    <div class="single-short">
+                        <div class="video-facade-container shorts-facade" data-video-id="x9sl3uc">
+                            <!-- CAMBIO: URL de miniatura de Dailymotion --><img src="https://www.dailymotion.com/thumbnail/video/x9sl3uc?max=1080" alt="Miniatura video cumpleaños">
+                            <div class="play-button"></div>
+                        </div>
+                    </div>
+                </div>
+                
+                <!-- Tarjeta 3 (Full width) --><div class="service-card full-width">
+                    <h3 class="service-title">Ideas a medida</h3>
+                    <p class="service-description">Proponé cualquier desafío creativo y juntos lo hacemos posible. Investigación y desarrollo de conceptos innovadores.</p>
+                    
+                    <ul class="service-details-list">
+                        <li>
+                            <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M5 13l4 4L19 7"/></svg>
+                            Diseño de conceptos únicos
+                        </li>
+                        <li>
+                            <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M5 13l4 4L19 7"/></svg>
+                            Gamificación para fiestas
+                        </li>
+                        <li>
+                            <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M5 13l4 4L19 7"/></svg>
+                            Visualización de shows
+                        </li>
+                         <li>
+                            <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M5 13l4 4L19 7"/></svg>
+                            ¡Y mucho más!
+                        </li>
+                    </ul>
+                    
+                    <a href="#contacto" class="service-cta-button">Solicitar Consultoría</a>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Guarantees Section --><section class="guarantees" id="garantias">
+        <div class="container">
+            <h2 class="section-title">Garantías y Condiciones</h2>
+            <div class="guarantee-content">
+                <p class="guarantee-text">
+                    Resultados Full HD en menos de 48 horas con briefing claro.<br>
+                    Revisiones ilimitadas, confidencialidad total, visualización white label a la medida de tu marca.
+                </p>
+            </div>
+        </div>
+    </section>
+
+    <!-- CTA Section --><section class="cta-section" id="contacto">
+        <div class="container">
+            <h2 class="section-title">¡Empezá hoy mismo!</h2>
+            <p class="section-subtitle">Transformá la manera en que presentás tus eventos</p>
+            
+            <div class="cta-buttons">
+                <!-- CAMBIO: Link de WhatsApp actualizado --><a href="https://wa.me/message/253LETRKRQPZN1" target="_blank" class="cta-button cta-large">Contactame por Whatsapp</a>
+                <!-- CAMBIO: Segundo botón eliminado --></div>
+        </div>
+    </section>
+
+    <!-- Footer --><footer class="footer">
+        <div class="container">
+            <!-- CAMBIO: Botón de WhatsApp eliminado del footer --><p class="footer-text">
+                &copy; 2025 Adrian Alcaraz - Visualización de Eventos. Todos los derechos reservados.
+            </p>
+        </div>
+    </footer>
+
+    <script>
+        // Create sparkles animation
+        function createSparkles() {
+            const sparklesContainer = document.getElementById('sparkles');
+            if (sparklesContainer.children.length > 0) return;
+            
+            const numberOfSparkles = 50;
+            
+            for (let i = 0; i < numberOfSparkles; i++) {
+                const sparkle = document.createElement('div');
+                sparkle.className = 'sparkle';
+                sparkle.style.left = Math.random() * 100 + '%';
+                sparkle.style.top = Math.random() * 100 + '%';
+                sparkle.style.animationDelay = Math.random() * 3 + 's';
+                sparklesContainer.appendChild(sparkle);
+            }
+        }
+
+        // Initialize before/after image comparison sliders
+        function initImageComparison() {
+            const sliders = document.querySelectorAll('.image-comparison');
+            
+            sliders.forEach(slider => {
+                const handle = slider.querySelector('.slider-handle');
+                const afterImage = slider.querySelector('.image-after');
+                let isActive = false;
+                
+                function updateSlider(x) {
+                    const rect = slider.getBoundingClientRect();
+                    const clientX = Math.max(rect.left, Math.min(x, rect.right));
+                    const position = clientX - rect.left;
+                    const percentage = (position / rect.width) * 100;
+                    
+                    handle.style.left = percentage + '%';
+                    afterImage.style.clipPath = `polygon(${percentage}% 0%, 100% 0%, 100% 100%, ${percentage}% 100%)`;
+                    slider.setAttribute('aria-valuenow', Math.round(percentage));
+                }
+                
+                // --- Eventos de Mouse ---
+                function onMouseDown(e) {
+                    isActive = true;
+                    slider.classList.add('sliding');
+                    e.preventDefault();
+                }
+                
+                function onMouseUp() {
+                    isActive = false;
+                    slider.classList.remove('sliding');
+                }
+                
+                function onMouseMove(e) {
+                    if (isActive) {
+                        updateSlider(e.clientX);
+                    }
+                }
+                
+                handle.addEventListener('mousedown', onMouseDown);
+                document.addEventListener('mouseup', onMouseUp);
+                document.addEventListener('mousemove', onMouseMove);
+
+                // --- Eventos Táctiles ---
+                function onTouchStart(e) {
+                    isActive = true;
+                    slider.classList.add('sliding');
+                    e.preventDefault(); 
+                }
+                
+                function onTouchEnd() {
+                    isActive = false;
+                    slider.classList.remove('sliding');
+                }
+                
+                function onTouchMove(e) {
+                    if (isActive && e.touches[0]) {
+                        updateSlider(e.touches[0].clientX);
+                    }
+                }
+
+                handle.addEventListener('touchstart', onTouchStart, { passive: false });
+                document.addEventListener('touchend', onTouchEnd);
+                document.addEventListener('touchmove', onTouchMove, { passive: true });
+                
+                // --- Eventos de Teclado (Accesibilidad) ---
+                handle.addEventListener('keydown', (e) => {
+                    const currentPercentage = parseFloat(handle.style.left) || 50;
+                    let newPercentage = currentPercentage;
+                    
+                    if (e.key === 'ArrowLeft') {
+                        newPercentage = Math.max(0, currentPercentage - 5); 
+                    } else if (e.key === 'ArrowRight') {
+                        newPercentage = Math.min(100, currentPercentage + 5); 
+                    }
+                    
+                    if (newPercentage !== currentPercentage) {
+                        const rect = slider.getBoundingClientRect();
+                        const newX = rect.left + (rect.width * newPercentage / 100);
+                        updateSlider(newX);
+                    }
+                });
+
+                // Click para mover slider
+                slider.addEventListener('click', (e) => {
+                    if (e.target === slider) { 
+                        updateSlider(e.clientX);
+                    }
+                });
+            });
+        }
+
+
+        // Smooth scroll for navigation
+        function initSmoothScroll() {
+            const links = document.querySelectorAll('a[href^="#"]');
+            const navHeight = parseInt(getComputedStyle(document.documentElement).getPropertyValue('--nav-height')) || 70;
+            const mobileNav = document.getElementById('nav-links');
+            const navToggle = document.getElementById('nav-toggle');
+            
+            links.forEach(link => {
+                link.addEventListener('click', (e) => {
+                    const href = link.getAttribute('href');
+                    if (href.startsWith('#') && href.length > 1) {
+                        e.preventDefault();
+                        const targetId = href.substring(1);
+                        const targetElement = document.getElementById(targetId);
+                        
+                        if (targetElement) {
+                            const elementPosition = targetElement.getBoundingClientRect().top;
+                            const offsetPosition = elementPosition + window.pageYOffset - navHeight;
+
+                            window.scrollTo({
+                                top: offsetPosition,
+                                behavior: 'smooth'
+                            });
+                            
+                            // Cerrar menú móvil al hacer clic
+                            if (mobileNav.classList.contains('nav-active')) {
+                                mobileNav.classList.remove('nav-active');
+                                navToggle.classList.remove('toggle');
+                                navToggle.setAttribute('aria-label', 'Abrir menú');
+                            }
+                        }
+                    }
+                });
+            });
+        }
+
+        // Intersection Observer for fade-in animations
+        function initScrollAnimations() {
+            const observerOptions = {
+                threshold: 0.1,
+                rootMargin: '0px 0px -50px 0px'
+            };
+            
+            const observer = new IntersectionObserver((entries, obs) => {
+                entries.forEach(entry => {
+                    if (entry.isIntersecting) {
+                        entry.target.style.opacity = '1';
+                        entry.target.style.transform = 'translateY(0)';
+                        obs.unobserve(entry.target); 
+                    }
+                });
+            }, observerOptions);
+            
+            const elementsToAnimate = document.querySelectorAll(
+                '.slider-container, .benefit-item, .process-step, .service-card, .guarantee-content'
+            );
+            
+            elementsToAnimate.forEach(el => {
+                el.style.opacity = '0';
+                el.style.transform = 'translateY(30px)';
+                el.style.transition = 'opacity 0.6s ease, transform 0.6s ease';
+                observer.observe(el);
+            });
+        }
+
+        // Lógica para el menú móvil (hamburguesa)
+        function initMobileNav() {
+            const navToggle = document.getElementById('nav-toggle');
+            const navLinks = document.getElementById('nav-links');
+
+            if (navToggle && navLinks) {
+                navToggle.addEventListener('click', () => {
+                    navLinks.classList.toggle('nav-active');
+                    navToggle.classList.toggle('toggle');
+                    
+                    if (navLinks.classList.contains('nav-active')) {
+                        navToggle.setAttribute('aria-label', 'Cerrar menú');
+                    } else {
+                        navToggle.setAttribute('aria-label', 'Abrir menú');
+                    }
+                });
+            }
+        }
+        
+        // Lógica para la "Fachada de Video" (AHORA PARA DAILYMOTION)
+        function initVideoFacades() {
+            const videoFacades = document.querySelectorAll('.video-facade-container'); 
+            
+            videoFacades.forEach(facade => {
+                facade.addEventListener('click', () => {
+                    const videoId = facade.dataset.videoId;
+                    if (!videoId) return;
+
+                    const iframe = document.createElement('iframe');
+                    // URL y parámetros para Dailymotion
+                    const videoSrc = `https://geo.dailymotion.com/player.html?video=${videoId}&autoplay=true&queue-enable=false&loop=true`; 
+                    
+                    iframe.setAttribute('src', videoSrc);
+                    iframe.setAttribute('allowfullscreen', '');
+                    iframe.setAttribute('title', 'Dailymotion Video Player');
+                    iframe.setAttribute('allow', 'autoplay; web-share'); // Dailymotion usa 'autoplay'
+                                        
+                    let containerClass = 'video-iframe-container'; // Contenedor general para iframe
+                    let parentWrapper = facade.parentNode; // El contenedor original de la fachada
+                    
+                    // Determinar si es un short para usar el contenedor vertical
+                    if (facade.classList.contains('shorts-facade')) {
+                        containerClass = 'shorts-iframe-container';
+                    }
+
+                    // Crear el nuevo contenedor para el iframe
+                    const iframeContainer = document.createElement('div');
+                    iframeContainer.className = containerClass;
+                    iframeContainer.appendChild(iframe);
+                    
+                    // Reemplazar la fachada con el nuevo contenedor del iframe
+                    parentWrapper.replaceChild(iframeContainer, facade);
+                    
+                });
+            });
+        }
+
+
+        // Lógica para resaltar el enlace de nav activo
+        function initActiveNavOnScroll() {
+            const sections = document.querySelectorAll('section[id]');
+            const navLinks = document.querySelectorAll('.nav-links a.nav-link');
+            const navHeight = getComputedStyle(document.documentElement).getPropertyValue('--nav-height').trim() || '70px';
+
+            const observerOptions = {
+                root: null,
+                rootMargin: `-${navHeight} 0px -60% 0px`, 
+                threshold: 0
+            };
+
+            const observer = new IntersectionObserver((entries) => {
+                entries.forEach(entry => {
+                    if (entry.isIntersecting) {
+                        const id = entry.target.getAttribute('id');
+                        navLinks.forEach(link => {
+                            link.classList.remove('active');
+                            if (link.getAttribute('href') === `#${id}`) {
+                                link.classList.add('active');
+                            }
+                        });
+                    }
+                });
+            }, observerOptions);
+
+            sections.forEach(section => {
+                observer.observe(section);
+            });
+        }
+
+
+        // Initialize everything when DOM is loaded
+        document.addEventListener('DOMContentLoaded', () => {
+            createSparkles();
+            initImageComparison();
+            initSmoothScroll();
+            initScrollAnimations();
+            initMobileNav(); 
+            initVideoFacades(); 
+            initActiveNavOnScroll(); 
+        });
+
+    </script>
+</body>
+</html>
